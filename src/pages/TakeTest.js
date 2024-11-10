@@ -15,6 +15,7 @@ const TakeTest = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+  const cameraStreamRef = useRef(null);
 
   useEffect(() => {
     async function loadModel() {
@@ -36,6 +37,7 @@ const TakeTest = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       videoRef.current.srcObject = stream;
+      cameraStreamRef.current = stream; // Store the stream to turn off the camera later
       mediaRecorderRef.current = new MediaRecorder(stream);
       
       const chunks = [];
@@ -64,12 +66,27 @@ const TakeTest = () => {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
+
+    // Turn off the camera by stopping the stream
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(track => track.stop());
+      cameraStreamRef.current = null;
+      videoRef.current.srcObject = null; // Remove video stream from video element
+    }
   };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setRecordedVideo(URL.createObjectURL(file));
+      const videoURL = URL.createObjectURL(file);
+      setRecordedVideo(videoURL);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = null; // Clear any previous srcObject
+        videoRef.current.src = videoURL; // Set video source to the uploaded file
+        videoRef.current.pause(); // Pause immediately to prevent autoplay
+        videoRef.current.load(); // Reload the video element to ensure it’s recognized
+      }
     }
   };
 
@@ -132,7 +149,7 @@ const TakeTest = () => {
             <CardTitle>Record Video</CardTitle>
           </CardHeader>
           <CardContent>
-            <video ref={videoRef} className="w-full mb-4" autoPlay muted />
+            <video ref={videoRef} className="w-full mb-4" autoPlay={isRecording} muted />
             {!isRecording ? (
               <Button onClick={startRecording} className="w-full">
                 <Camera className="mr-2 h-4 w-4" /> Start Recording (5s)
