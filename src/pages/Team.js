@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/Card';
 
 const Team = () => {
   const teamMembers = [
-    { name: 'John Doe', role: 'Project Lead' },
-    { name: 'Jane Smith', role: 'UI/UX Designer' },
-    { name: 'Mike Johnson', role: 'Full Stack Developer' },
-    { name: 'Sarah Brown', role: 'Machine Learning Engineer' },
+    { name: 'Kritagya Parajuli' },
+    { name: 'Mohit Dwivedi'},
+    { name: 'Srrishti'},
+    { name: 'Sanya Chopra'},
   ];
 
   return (
@@ -18,9 +18,7 @@ const Team = () => {
             <CardHeader>
               <CardTitle>{member.name}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p>{member.role}</p>
-            </CardContent>
+            
           </Card>
         ))}
       </div>
