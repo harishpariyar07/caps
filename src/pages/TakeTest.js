@@ -21,7 +21,7 @@ const TakeTest = () => {
     async function loadModel() {
       try {
         await tf.ready();
-        const loadedModel = await tf.loadLayersModel('/ml_model_tfjs/model.json', { strict: false });
+        const loadedModel = await tf.loadLayersModel('/ml_model_tfjs/model_new/model.json', { strict: false });
         setModel(loadedModel);
         const response = await fetch('/ISL_actions.json');
         const loadedActions = await response.json();
