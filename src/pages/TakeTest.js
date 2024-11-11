@@ -13,6 +13,7 @@ const TakeTest = () => {
   const [actions, setActions] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const cameraStreamRef = useRef(null);
@@ -32,6 +33,19 @@ const TakeTest = () => {
     }
     loadModel();
   }, []);
+
+  const startCountdown = () => {
+    setCountdown(3); // Start countdown at 3 seconds
+    const countdownInterval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev === 1) {
+          clearInterval(countdownInterval);
+          startRecording();
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   const startRecording = async () => {
     try {
@@ -55,7 +69,7 @@ const TakeTest = () => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
           stopRecording();
         }
-      }, 5000);
+      }, 3000);
     } catch (error) {
       console.error('Error accessing camera:', error);
     }
@@ -150,9 +164,11 @@ const TakeTest = () => {
           </CardHeader>
           <CardContent>
             <video ref={videoRef} className="w-full mb-4" autoPlay={isRecording} muted />
-            {!isRecording ? (
-              <Button onClick={startRecording} className="w-full">
-                <Camera className="mr-2 h-4 w-4" /> Start Recording (5s)
+            {countdown > 0 ? (
+              <p className="text-center text-xl font-bold mb-4">Recording starts in: {countdown}</p>
+            ) : !isRecording ? (
+              <Button onClick={startCountdown} className="w-full">
+                <Camera className="mr-2 h-4 w-4" /> Start Recording (3s)
               </Button>
             ) : (
               <Button disabled className="w-full bg-red-500">
