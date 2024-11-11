@@ -7,6 +7,7 @@ const Team = () => {
     { name: 'Mohit Dwivedi'},
     { name: 'Srrishti'},
     { name: 'Sanya Chopra'},
+    { name: 'Supervisor Dr. Deepti Mittal'}
   ];
 
   return (
